@@ -1,0 +1,27 @@
+body {
+    background: rgba(0, 145, 255, 0.89);
+    background: url(graduation1.png);
+}
+
+main {
+    color: #ffffff;
+}
+
+.invalid-feedback {
+    color: #ffffff;
+}
+
+.jumbotron {
+    background-color: inherit;
+}
+
+#title {
+    font-size: 7em;
+}
+
+#btn {
+    margin-top: 3em;
+    padding-top: 7em;
+    padding-bottom: 7em;
+    border-radius: .5em;
+}

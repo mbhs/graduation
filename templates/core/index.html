@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+
+<main>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 id="title" class="display-1 text-center">Graduation Ticket Swap</h1>
+            <div class="row">
+                <div class="col-6">
+                    <a href="{% url 'request' %}" id="btn" class="btn btn-outline-light btn-lg btn-block font-weight-lighter"><h1 class="display-4">I <span class="font-weight-bold">need</span> extra tickets</h1></a>
+                </div>
+                <div class="col-6">
+                    <a href="{% url 'donate' %}" id="btn" class="btn btn-outline-light btn-lg btn-block font-weight-lighter"><h1 class="display-4">I <span class="font-weight-bold">have</span> extra tickets</h1></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock content %}

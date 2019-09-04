@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+    <main>
+        <h1 class="display-1">Donate Tickets</h1>
+        <!--<form action="{% url 'index' %}" method="post">-->
+            {% crispy form %}
+        <!--</form>-->
+    </main>
+</div>
+
+{% endblock content %}
