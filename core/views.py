@@ -7,58 +7,58 @@ from django.core.mail import send_mail
 from .forms import RequestForm, DonateForm
 from .models import Request, Donation
 
+
 def index(request):
     context = {}
     return render(request, 'core/index.html', context)
 
-def success(request):
-    done=False
-    while not done:
-        toFill=Request.objects.all().order_by('time').first()
-        if not toFill:
-            done=True
-        else:
-            donors=[Donation.objects.filter(tickets__gte=toFill.tickets).order_by('tickets').first()]
-            if not donors[0]:
-                donors=[]
-                potentials=Donation.objects.all().order_by('-tickets')
-                left=toFill.tickets
 
-                finished=False
-                count=0
-                while count<len(potentials) and not finished:
-                    if left-potentials[count].tickets<=0:
-                        potentials[count].tickets-=left
-                        left=0
-                        finished=True
+def success(request):
+    done = False
+    while not done:
+        toFill = Request.objects.all().order_by('time').first()
+        if not toFill:
+            done = True
+        else:
+            donors = [Donation.objects.filter(tickets__gte=toFill.tickets).order_by('tickets').first()]
+            if not donors[0]:
+                donors = []
+                potentials = Donation.objects.all().order_by('-tickets')
+                left = toFill.tickets
+
+                finished = False
+                count = 0
+                while count < len(potentials) and not finished:
+                    if left - potentials[count].tickets <= 0:
+                        potentials[count].tickets -= left
+                        left = 0
+                        finished = True
                     else:
-                        left-=potentials[count].tickets
-                        potentials[count].tickets=0
+                        left -= potentials[count].tickets
+                        potentials[count].tickets = 0
                     donors.append(potentials[count])
-                    count+=1
-                if left!=0: #cant fill any more
-                    done=True
+                    count += 1
+                if left != 0:  # cant fill any more
+                    done = True
 
             else:
                 donors[0].tickets -= toFill.tickets
 
             if not done:
-                emails=[toFill.email]
+                emails = [toFill.email]
                 for donor in donors:
                     emails.append(donor.email)
                     donor.save()
-                    if donor.tickets==0:
+                    if donor.tickets == 0:
                         donor.delete()
                 toFill.delete()
-                print(emails)
-        ###if can be filled
-            ##donoremails.append
-            ###send email code
-            #send_mail('Ticket Swap','Ill have a number 9 large','info@graduation.mbhs.edu',[dmails,'jessesilverberg11@gmail.com'],fail_silently=False,)
+                send_mail('MBHS Graduation Ticket Swap',
+                          'This is an auto-generated email sent by graduation.mbhs.edu. You are receiving this email because you filled out a form either requesting or donating tickets for graduation. The other emails in the "To:" field are your matches; use them to organize your ticket exchange. Do not reply to this email address.',
+                          'info@graduation.mbhs.edu', emails, fail_silently=False)
 
-    ###### Maybe make context for which type like what kind of instructions hmm
     context = {}
     return render(request, 'core/success.html', context)
+
 
 def donate(request):
     if request.method == 'POST':
@@ -81,6 +81,7 @@ def donate(request):
     context = {'form': form}
     return render(request, 'core/donate.html', context)
 
+
 def request(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -102,7 +103,3 @@ def request(request):
 
     context = {'form': form}
     return render(request, 'core/request.html', context)
-
-
-
-
