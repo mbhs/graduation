@@ -10,6 +10,7 @@ body {
     -webkit-box-pack: center;
     justify-content: center;
     background: url(graduation1.png);
+    background-size: cover;
 }
 
 main {
