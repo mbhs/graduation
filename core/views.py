@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 from .forms import RequestForm, DonateForm
 from .models import Request, Donation
@@ -52,9 +53,16 @@ def success(request):
                     if donor.tickets == 0:
                         donor.delete()
                 toFill.delete()
-                send_mail('MBHS Graduation Ticket Swap',
-                          'This is an auto-generated email sent by graduation.mbhs.edu. You are receiving this email because you filled out a form either requesting or donating tickets for graduation. The other emails in the "To:" field are your matches; use them to organize your ticket exchange. Do not reply to this email address.',
-                          'info@graduation.mbhs.edu', emails, fail_silently=False)
+
+                email = EmailMessage(
+                    'MBHS Graduation Ticket Swap',
+                    'This is an auto-generated email sent by graduation.mbhs.edu. You are receiving this email because you filled out a form either requesting or donating tickets for graduation. The other emails in the "To:" field are your matches; use them to organize your ticket exchange. Do not reply to this email address.',
+                    'info@graduation.mbhs.edu',
+                    emails,
+                    ['mbhsgraduation@gmail.com']
+                )
+                email.send(fail_silently=False)
+                
 
     context = {}
     return render(request, 'core/success.html', context)

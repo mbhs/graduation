@@ -13,7 +13,7 @@ class Request(models.Model):
     time = models.DateTimeField()
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
-    tickets = models.IntegerField(validators=[MaxValueValidator(12), MinValueValidator(1)])
+    tickets = models.IntegerField(validators=[MaxValueValidator(4), MinValueValidator(1)])
 
     def __str__(self):
         return 'Request: ' + self.name
