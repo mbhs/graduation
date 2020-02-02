@@ -21,7 +21,7 @@ def success(request):
         if not toFill:
             done = True
         else:
-            message = toFill.name + " has requested " + toFill.tickets + ". The donations are:\n\n"
+            message = toFill.name + " has requested " + str(toFill.tickets) + ". The donations are:\n\n"
             donors = [Donation.objects.filter(tickets__gte=toFill.tickets).order_by('tickets').first()]
             if not donors[0]:
                 donors = []
