@@ -18,10 +18,10 @@ def success(request):
     done = False
     while not done:
         toFill = Request.objects.all().order_by('time').first()
-        message = toFill.name + " has requested " + toFill.tickets + ". The donations are:\n\n"
         if not toFill:
             done = True
         else:
+            message = toFill.name + " has requested " + toFill.tickets + ". The donations are:\n\n"
             donors = [Donation.objects.filter(tickets__gte=toFill.tickets).order_by('tickets').first()]
             if not donors[0]:
                 donors = []
@@ -33,12 +33,12 @@ def success(request):
                 while count < len(potentials) and not finished:
                     if left - potentials[count].tickets <= 0:
                         potentials[count].tickets -= left
-                        message+=potentials[count].name+": "+left+" tickets"
+                        message+=potentials[count].name+": "+str(left)+" tickets"
                         left = 0
                         finished = True
                     else:
                         left -= potentials[count].tickets
-                        message += potentials[count].name + ": " + potentials[count].tickets + " tickets\n"
+                        message += potentials[count].name + ": " + str(potentials[count].tickets) + " tickets\n"
                         potentials[count].tickets = 0
                     donors.append(potentials[count])
                     count += 1
@@ -47,7 +47,7 @@ def success(request):
 
             else:
                 donors[0].tickets -= toFill.tickets
-                message+=donors[0].name+": "+toFill.tickets+" tickets"
+                message+=donors[0].name+": "+str(toFill.tickets)+" tickets"
 
             if not done:
                 emails = [toFill.email]
