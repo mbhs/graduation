@@ -18,6 +18,7 @@ def success(request):
     done = False
     while not done:
         toFill = Request.objects.all().order_by('time').first()
+        message = toFill.name + " has requested " + toFill.tickets + ". The donations are:\n\n"
         if not toFill:
             done = True
         else:
@@ -32,10 +33,12 @@ def success(request):
                 while count < len(potentials) and not finished:
                     if left - potentials[count].tickets <= 0:
                         potentials[count].tickets -= left
+                        message+=potentials[count].name+": "+left+" tickets"
                         left = 0
                         finished = True
                     else:
                         left -= potentials[count].tickets
+                        message += potentials[count].name + ": " + potentials[count].tickets + " tickets\n"
                         potentials[count].tickets = 0
                     donors.append(potentials[count])
                     count += 1
@@ -44,9 +47,11 @@ def success(request):
 
             else:
                 donors[0].tickets -= toFill.tickets
+                message+=donors[0].name+": "+toFill.tickets+" tickets"
 
             if not done:
                 emails = [toFill.email]
+
                 for donor in donors:
                     emails.append(donor.email)
                     donor.save()
@@ -56,13 +61,13 @@ def success(request):
 
                 email = EmailMessage(
                     'MBHS Graduation Ticket Swap',
-                    'This is an auto-generated email sent by graduation.mbhs.edu. You are receiving this email because you filled out a form either requesting or donating tickets for graduation. The other emails in the "To:" field are your matches; use them to organize your ticket exchange. Do not reply to this email address.',
+                    'This is an auto-generated email sent by graduation.mbhs.edu. You are receiving this email because you filled out a form either requesting or donating tickets for graduation. The other emails in the "To:" field are your matches; use them to organize your ticket exchange. Do not reply to this email address.\n\n'+message,
                     'info@graduation.mbhs.edu',
                     emails,
                     ['mbhsgraduation@gmail.com']
                 )
                 email.send(fail_silently=False)
-                
+
 
     context = {}
     return render(request, 'core/success.html', context)
