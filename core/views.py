@@ -112,9 +112,12 @@ def request(request):
 
             request = form.save(commit=False)
             request.time = timezone.now()
+            total=0
             for old in ClosedRequest.objects.all():
                 if old.email == request.email:
-                    return HttpResponseRedirect('/failed')
+                    total+=old.tickets
+            if total>=4:
+                return HttpResponseRedirect('/failed')
 
             request.save()
 
