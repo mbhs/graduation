@@ -114,7 +114,6 @@ def request(request):
             request.time = timezone.now()
             for old in ClosedRequest.objects.all():
                 if old.email == request.email:
-                    request.delete()
                     return HttpResponseRedirect('/failed')
 
             request.save()
