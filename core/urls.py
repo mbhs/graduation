@@ -7,4 +7,5 @@ urlpatterns = [
     path('success', views.success, name='success'),
     path('request', views.request, name='request'),
     path('donate', views.donate, name='donate'),
+    path('failed', views.failed, name='failed'),
 ]

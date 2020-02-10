@@ -13,14 +13,25 @@ def index(request):
     context = {}
     return render(request, 'core/index.html', context)
 
+def failed(request):
+    context = {}
+    return render(request, 'core/failed.html', context)
+
 
 def success(request):
+    context = {}
     done = False
     while not done:
         toFill = Request.objects.all().order_by('time').first()
+
         if not toFill:
             done = True
         else:
+            for old in ClosedRequest.objects.all():
+                if old.email == toFill.email:
+                    toFill.delete()
+                    return render(request, 'core/failed.html', context)
+
             message = toFill.name + " has requested " + str(toFill.tickets) + (" ticket" if toFill.tickets==1 else " tickets")+". The donations are:\n\n"
             donors = [Donation.objects.filter(tickets__gte=toFill.tickets).order_by('tickets').first()]
             if not donors[0]:
@@ -71,7 +82,6 @@ def success(request):
                 email.send(fail_silently=False)
 
 
-    context = {}
     return render(request, 'core/success.html', context)
 
 
