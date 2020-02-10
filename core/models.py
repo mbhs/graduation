@@ -17,3 +17,12 @@ class Request(models.Model):
 
     def __str__(self):
         return 'Request: ' + self.name
+
+class ClosedRequest(models.Model):
+    time = models.DateTimeField()
+    name = models.CharField(max_length=200)
+    email = models.EmailField(max_length=200)
+    tickets = models.IntegerField(validators=[MaxValueValidator(4), MinValueValidator(1)])
+
+    def __str__(self):
+        return 'ClosedRequest: ' + self.name

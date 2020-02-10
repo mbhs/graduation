@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 
 from .forms import RequestForm, DonateForm
-from .models import Request, Donation
+from .models import Request, Donation, ClosedRequest
 
 
 def index(request):
@@ -57,6 +57,8 @@ def success(request):
                     donor.save()
                     if donor.tickets == 0:
                         donor.delete()
+                closed=ClosedRequest(name=toFill.name,email=toFill.email,time=toFill.time,tickets=toFill.tickets)
+                closed.save()
                 toFill.delete()
 
                 email = EmailMessage(
