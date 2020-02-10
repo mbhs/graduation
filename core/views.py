@@ -27,11 +27,6 @@ def success(request):
         if not toFill:
             done = True
         else:
-            for old in ClosedRequest.objects.all():
-                if old.email == toFill.email:
-                    toFill.delete()
-                    return render(request, 'core/failed.html', context)
-
             message = toFill.name + " has requested " + str(toFill.tickets) + (" ticket" if toFill.tickets==1 else " tickets")+". The donations are:\n\n"
             donors = [Donation.objects.filter(tickets__gte=toFill.tickets).order_by('tickets').first()]
             if not donors[0]:
@@ -117,6 +112,11 @@ def request(request):
 
             request = form.save(commit=False)
             request.time = timezone.now()
+            for old in ClosedRequest.objects.all():
+                if old.email == request.email:
+                    request.delete()
+                    return HttpResponseRedirect('/failed')
+
             request.save()
 
             # redirect to a new URL:
